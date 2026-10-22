@@ -1,0 +1,21 @@
+codigo_producto,descripcion,categoria,subcategoria,marca,unidad_medida,precio_venta,costo_unitario,proveedor,estado,fecha_creacion
+P00001,Leche Prado x1,Lácteos,Leche,Prado,und,9300,7386,PRV028,Activo,2021-02-26
+P00002,Mantequilla Nativa 2 L,Lácteos,Mantequilla,Nativa,und,$ 14.700,12748,PRV034,Activo,2020-09-13
+P00003,Leche Pacífico 400 ml,Lácteos,Leche,Pacífico,und,12500,9972,PRV018,Activo,2018-07-21
+P00004,Quesos Cordillera x1,Lácteos,Quesos,Cordillera,und,15350,12538,PRV007,Activo,2022-07-19
+P00005,Leche Pacífico 2 L,Lácteos,Leche,Pacífico,und,16350,13115,PRV008,Activo,2020-12-26
+P00006,Leche Valle Dorado 250 g,Lácteos,Leche,Valle Dorado,und,13100,10552,PRV015,Activo,2023-10-20
+P00007,Mantequilla Caribe 400 ml,Lácteos,Mantequilla,Caribe,und,9800,8438,PRV006,Activo,2019-12-25
+P00008,Leche Valle Dorado 2 L,Lácteos,Leche,Valle Dorado,und,9300,7410,PRV026,Activo,2022-03-14
+P00009,Mantequilla Prado x12,Lácteos,Mantequilla,Prado,und,14950,12577,PRV012,Activo,2021-10-26
+P00010,Leche Prado 250 g,Lácteos,Leche,Prado,und,2600,2083,PRV032,Activo,2021-12-27
+P00010,LECHE PRADO 250 G,Lácteos,Leche,Prado,und,2600,2083,PRV032,Activo,2021-12-27
+P00011,Yogur Prado x1,Lácteos,Yogur,Prado,und,9600,7902,PRV006,Activo,2020-08-20
+P00012,Quesos Sierra 400 ml,Lácteos,Quesos,Sierra,und,11250,12937,PRV023,Activo,2021-10-22
+P00013,Leche Valle Dorado 1 kg,Lácteos,Leche,Valle Dorado,und,7200,6314,PRV018,Activo,2019-08-29
+P00014,Yogur Pacífico x6,Lácteos,Yogur,Pacífico,und,6150,5376,PRV035,Activo,2019-09-09
+P00015,Yogur Sierra x12,Lácteos,Yogur,Sierra,und,11150,8938,PRV027,Activo,2020-07-04
+P00016,Mantequilla Andina 250 g,lácteos,Mantequilla,Andina,Unidad,2850,2482,PRV031,Activo,2022-05-01
+P00017,Quesos Del Campo 400 ml,Lácteos,Quesos,Del Campo,und,10250,8864,PRV028,Activo,2018-12-31
+P00018,Yogur La Sabana 500 g,Lácteos,Yogur,La Sabana,und,12250,10337,PRV039,Activo,2018-07-11
+P00019,Yogur Pacífico 400 ml,Lácteos,Yogur,Pacífico,Unidad,16600,13446,PRV011,Activo,2019-08-01

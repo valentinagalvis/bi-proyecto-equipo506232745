@@ -1,0 +1,611 @@
+[
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "cantidad",
+    "problema": "Cantidad nula",
+    "filas_afectadas": 719,
+    "ejemplos": [
+      "BOG01-2024-0000071",
+      "BOG01-2024-0000118",
+      "BOG01-2024-0000171",
+      "BOG01-2024-0000237",
+      "BOG01-2024-0000323"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "cantidad / valor_total",
+    "problema": "Devolución registrada como venta negativa",
+    "filas_afectadas": 208,
+    "ejemplos": [
+      "-1.0",
+      "-1.0",
+      "-1.0",
+      "-1.0",
+      "-0.77"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "precio_unitario",
+    "problema": "Error de digitación (precio x100)",
+    "filas_afectadas": 57,
+    "ejemplos": [
+      "4225000.0",
+      "3120000.0",
+      "2560000.0",
+      "3730000.0",
+      "1150000.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "fecha",
+    "problema": "Formato de fecha propio de la sede (%Y-%m-%d)",
+    "filas_afectadas": 129140,
+    "ejemplos": [
+      "2024-01-01",
+      "2024-01-01"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "fecha",
+    "problema": "Formatos de fecha mezclados en el mismo archivo",
+    "filas_afectadas": 1305,
+    "ejemplos": [
+      "03/01/2024",
+      "03/01/2024",
+      "04/01/2024",
+      "04/01/2024",
+      "04/01/2024"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "ciudad",
+    "problema": "Ciudad escrita de formas distintas",
+    "filas_afectadas": 6466,
+    "ejemplos": [
+      "Bogota D.C.",
+      "bogotá",
+      "BOGOTA",
+      "BOGOTA",
+      "Bogota D.C."
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "codigo_producto",
+    "problema": "Código de producto con formato inconsistente",
+    "filas_afectadas": 1919,
+    "ejemplos": [
+      "P182",
+      " P00042 ",
+      "p00062",
+      "P286",
+      "P-00063"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "codigo_producto",
+    "problema": "Código que no existe en el catálogo (huérfano)",
+    "filas_afectadas": 129,
+    "ejemplos": [
+      "P92447",
+      "P91187",
+      "P96676",
+      "P96500",
+      "P98433"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_bogota.csv",
+    "campo": "registro completo",
+    "problema": "Filas duplicadas exactas",
+    "filas_afectadas": 517,
+    "ejemplos": [
+      "BOG01-2025-0000471",
+      "BOG01-2024-0022126",
+      "BOG01-2025-0022675",
+      "BOG01-2024-0018816",
+      "BOG01-2025-0023687"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "cantidad",
+    "problema": "Cantidad nula",
+    "filas_afectadas": 624,
+    "ejemplos": [
+      "MED01-2024-0000032",
+      "MED01-2024-0000036",
+      "MED01-2024-0000048",
+      "MED01-2024-0000119",
+      "MED01-2024-0000122"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "cantidad / valor_total",
+    "problema": "Devolución registrada como venta negativa",
+    "filas_afectadas": 142,
+    "ejemplos": [
+      "-1.0",
+      "-1.0",
+      "-2.262",
+      "-1.378",
+      "-0.8"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "precio_unitario",
+    "problema": "Error de digitación (precio x100)",
+    "filas_afectadas": 41,
+    "ejemplos": [
+      "4965000.0",
+      "790000.0",
+      "1780000.0",
+      "1985000.0",
+      "2550000.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "fecha",
+    "problema": "Formato de fecha propio de la sede (%Y/%m/%d)",
+    "filas_afectadas": 95910,
+    "ejemplos": [
+      "2024/01/01",
+      "2024/01/01"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "ciudad",
+    "problema": "Ciudad escrita de formas distintas",
+    "filas_afectadas": 4830,
+    "ejemplos": [
+      "MEDELLIN",
+      "Medellin",
+      "MEDELLIN",
+      "Medellin",
+      "MEDELLIN"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "codigo_producto",
+    "problema": "Código de producto con formato inconsistente",
+    "filas_afectadas": 1381,
+    "ejemplos": [
+      "P292",
+      " P00258 ",
+      " P00204 ",
+      "P247",
+      "P-00307"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "codigo_producto",
+    "problema": "Código que no existe en el catálogo (huérfano)",
+    "filas_afectadas": 82,
+    "ejemplos": [
+      "P98832",
+      "P93960",
+      "P94674",
+      "P96619",
+      "P98104"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "precio_unitario",
+    "problema": "Precio como texto con $ y punto de miles",
+    "filas_afectadas": 2947,
+    "ejemplos": [
+      "$18.100",
+      "$4.450",
+      "$38.700",
+      "$8.900",
+      "$34.850"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_medellin.csv",
+    "campo": "registro completo",
+    "problema": "Filas duplicadas exactas",
+    "filas_afectadas": 384,
+    "ejemplos": [
+      "MED01-2025-0017800",
+      "MED01-2025-0018720",
+      "MED01-2025-0011836",
+      "MED01-2024-0016794",
+      "MED01-2025-0012595"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "cantidad",
+    "problema": "Cantidad nula",
+    "filas_afectadas": 486,
+    "ejemplos": [
+      "CAL01-2024-0000087",
+      "CAL01-2024-0000102",
+      "CAL01-2024-0000131",
+      "CAL01-2024-0000135",
+      "CAL01-2024-0000173"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "cantidad / valor_total",
+    "problema": "Devolución registrada como venta negativa",
+    "filas_afectadas": 113,
+    "ejemplos": [
+      "-1.0",
+      "-1.0",
+      "-2.0",
+      "-2.0",
+      "-1.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "precio_unitario",
+    "problema": "Error de digitación (precio x100)",
+    "filas_afectadas": 49,
+    "ejemplos": [
+      "880000.0",
+      "1505000.0",
+      "630000.0",
+      "2805000.0",
+      "850000.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "fecha",
+    "problema": "Formato de fecha propio de la sede (%d/%m/%Y)",
+    "filas_afectadas": 82462,
+    "ejemplos": [
+      "01/01/2024",
+      "01/01/2024"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "ciudad",
+    "problema": "Ciudad escrita de formas distintas",
+    "filas_afectadas": 4001,
+    "ejemplos": [
+      "Santiago de Cali",
+      "CALI",
+      "Santiago de Cali",
+      "CALI",
+      "CALI"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "codigo_producto",
+    "problema": "Código de producto con formato inconsistente",
+    "filas_afectadas": 1188,
+    "ejemplos": [
+      " P00195 ",
+      " P00237 ",
+      " P00112 ",
+      "P-00292",
+      "P300"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "codigo_producto",
+    "problema": "Código que no existe en el catálogo (huérfano)",
+    "filas_afectadas": 77,
+    "ejemplos": [
+      "P91801",
+      "P98195",
+      "P91631",
+      "P96344",
+      "P95718"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "id_cliente",
+    "problema": "Cliente vacío codificado como texto",
+    "filas_afectadas": 1545,
+    "ejemplos": [
+      "N/A",
+      "SIN CLIENTE",
+      "N/A",
+      "0",
+      "N/A"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_cali.csv",
+    "campo": "registro completo",
+    "problema": "Filas duplicadas exactas",
+    "filas_afectadas": 330,
+    "ejemplos": [
+      "CAL01-2025-0004253",
+      "CAL01-2024-0007108",
+      "CAL01-2024-0002492",
+      "CAL01-2025-0012619",
+      "CAL01-2024-0001221"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "cantidad",
+    "problema": "Cantidad nula",
+    "filas_afectadas": 371,
+    "ejemplos": [
+      "BAQ01-2024-0000046",
+      "BAQ01-2024-0000048",
+      "BAQ01-2024-0000100",
+      "BAQ01-2024-0000113",
+      "BAQ01-2024-0000179"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "cantidad / valor_total",
+    "problema": "Devolución registrada como venta negativa",
+    "filas_afectadas": 92,
+    "ejemplos": [
+      "-2.0",
+      "-3.0",
+      "-1.0",
+      "-2.0",
+      "-1.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "precio_unitario",
+    "problema": "Error de digitación (precio x100)",
+    "filas_afectadas": 22,
+    "ejemplos": [
+      "2045000.0",
+      "630000.0",
+      "960000.0",
+      "1205000.0",
+      "645000.0"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "fecha",
+    "problema": "Formato de fecha propio de la sede (%m-%d-%Y)",
+    "filas_afectadas": 68371,
+    "ejemplos": [
+      "01-01-2024",
+      "01-01-2024"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "cantidad / descuento_pct",
+    "problema": "Separador ';' y coma decimal (configuración regional)",
+    "filas_afectadas": 68371,
+    "ejemplos": [
+      "0,00",
+      "0,00"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "ciudad",
+    "problema": "Ciudad escrita de formas distintas",
+    "filas_afectadas": 3473,
+    "ejemplos": [
+      "B/quilla",
+      "BARRANQUILLA",
+      "Barranquilla ",
+      "B/quilla",
+      "Barranquilla "
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "codigo_producto",
+    "problema": "Código de producto con formato inconsistente",
+    "filas_afectadas": 958,
+    "ejemplos": [
+      "p00246",
+      " P00083 ",
+      "P-00274",
+      "P-00062",
+      "p00242"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "codigo_producto",
+    "problema": "Código que no existe en el catálogo (huérfano)",
+    "filas_afectadas": 75,
+    "ejemplos": [
+      "P92183",
+      "P98077",
+      "P94097",
+      "P92090",
+      "P91568"
+    ]
+  },
+  {
+    "fuente": "F1 ventas_pos_barranquilla.csv",
+    "campo": "registro completo",
+    "problema": "Filas duplicadas exactas",
+    "filas_afectadas": 273,
+    "ejemplos": [
+      "BAQ01-2025-0000267",
+      "BAQ01-2024-0002698",
+      "BAQ01-2025-0004248",
+      "BAQ01-2024-0011780",
+      "BAQ01-2025-0011121"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "categoria",
+    "problema": "Misma categoría escrita de formas distintas",
+    "filas_afectadas": 20,
+    "ejemplos": [
+      "lácteos",
+      "carnes y pescados",
+      "Frutas y verduras",
+      "frutas y verduras",
+      "Granos y abarrotes"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "unidad_medida",
+    "problema": "Unidad de medida sin estandarizar",
+    "filas_afectadas": 97,
+    "ejemplos": [
+      "Unidad",
+      "Unidad",
+      "UND",
+      "Unidad",
+      "UND"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "costo_unitario",
+    "problema": "Costo nulo (no se puede calcular margen)",
+    "filas_afectadas": 6,
+    "ejemplos": [
+      "P00044",
+      "P00056",
+      "P00071",
+      "P00138",
+      "P00180"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "costo_unitario",
+    "problema": "Costo mayor que el precio de venta",
+    "filas_afectadas": 5,
+    "ejemplos": [
+      "P00012: precio 11250 / costo 12937",
+      "P00106: precio 3850 / costo 4427",
+      "P00135: precio 20200 / costo 23230",
+      "P00167: precio 14150 / costo 16272",
+      "P00208: precio 94850 / costo 109077"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "precio_venta",
+    "problema": "Precio guardado como texto con símbolo $",
+    "filas_afectadas": 7,
+    "ejemplos": [
+      "$ 14.700",
+      "$ 42.300",
+      "$ 5.800",
+      "$ 15.500",
+      "$ 14.400"
+    ]
+  },
+  {
+    "fuente": "F2 catalogo_productos.xlsx",
+    "campo": "codigo_producto",
+    "problema": "Código duplicado con descripción diferente",
+    "filas_afectadas": 8,
+    "ejemplos": [
+      "P00168",
+      "P00231",
+      "P00026",
+      "P00064",
+      "P00010"
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "programa.fecha_afiliacion",
+    "problema": "Fechas en dos formatos (ISO y dd/mm/aaaa)",
+    "filas_afectadas": 903,
+    "ejemplos": [
+      "06/08/2025",
+      "09/08/2025",
+      "21/08/2025",
+      "07/01/2025",
+      "01/07/2025"
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "contacto.ciudad",
+    "problema": "Ciudad escrita de formas distintas",
+    "filas_afectadas": 630,
+    "ejemplos": [
+      "Bogota D.C.",
+      "BARRANQUILLA",
+      "Medellin",
+      "Bogota D.C.",
+      "Bogota D.C."
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "genero",
+    "problema": "Género codificado de varias formas",
+    "filas_afectadas": 2693,
+    "ejemplos": [
+      "Femenino",
+      "f",
+      "Femenino",
+      "Femenino",
+      "Femenino"
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "programa.nivel",
+    "problema": "Nivel del programa nulo",
+    "filas_afectadas": 189,
+    "ejemplos": [
+      "CLI00144",
+      "CLI00167",
+      "CLI00210",
+      "CLI00213",
+      "CLI00224"
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "contacto.email",
+    "problema": "Correo inválido (sin @)",
+    "filas_afectadas": 129,
+    "ejemplos": [
+      "paula.ospina214correo-demo.co",
+      "laura.suarez273correo-demo.co",
+      "juan.perez566correo-demo.co",
+      "valentina.ramirez610correo-demo.co",
+      "valentina.jimenez770correo-demo.co"
+    ]
+  },
+  {
+    "fuente": "F3 clientes_fidelizacion.json",
+    "campo": "id_cliente",
+    "problema": "Cliente duplicado con nombre/correo en mayúsculas",
+    "filas_afectadas": 135,
+    "ejemplos": [
+      "CLI07941",
+      "CLI01163",
+      "CLI00583",
+      "CLI04082",
+      "CLI08413"
+    ]
+  }
+]

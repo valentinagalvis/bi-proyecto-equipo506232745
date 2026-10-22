@@ -1,0 +1,21 @@
+id_cliente,nombres,apellidos,genero,fecha_nacimiento,contacto.email,contacto.ciudad,programa.nivel,programa.fecha_afiliacion,programa.puntos,programa.acepta_marketing
+CLI00001,María,Pérez Ortiz,Femenino,1960-05-31,maria.perez0@correo-demo.co,Medellín,Bronce,2025-02-05,10240,True
+CLI00002,Jorge,Mejía Gómez,M,1967-10-01,jorge.mejia1@correo-demo.co,Barranquilla,Bronce,2023-09-14,12785,True
+CLI00003,Carolina,Ospina Mejía,F,1991-01-01,carolina.ospina2@correo-demo.co,Bogotá,Plata,2024-09-17,6803,False
+CLI00004,Natalia,Martínez Ospina,F,1965-05-03,natalia.martinez3@correo-demo.co,Medellín,Bronce,2025-09-16,3529,False
+CLI00005,Alejandra,Ospina Ospina,F,1967-08-15,alejandra.ospina4@correo-demo.co,Barranquilla,Bronce,2025-08-04,24194,False
+CLI00006,Natalia,Ospina Ruiz,F,1987-06-22,natalia.ospina5@correo-demo.co,Medellín,Plata,2024-08-14,15705,True
+CLI00007,Carlos,Suárez Pérez,M,1980-07-30,carlos.suarez6@correo-demo.co,Bogotá,Plata,2024-08-14,13813,False
+CLI00008,Andrés,Ruiz Torres,M,1962-04-19,andres.ruiz7@correo-demo.co,Bogota D.C.,Bronce,2025-10-21,11741,True
+CLI00009,Natalia,Rodríguez Martínez,f,1971-04-24,natalia.rodriguez8@correo-demo.co,Barranquilla,Plata,2025-11-19,1022,True
+CLI00010,Carolina,Martínez Suárez,F,1987-02-25,carolina.martinez9@correo-demo.co,Bogotá,Plata,2019-05-23,22636,True
+CLI00011,Laura,Vargas Jiménez,F,1958-04-15,laura.vargas10@correo-demo.co,Medellín,Bronce,2025-07-14,15407,False
+CLI00012,Laura,Martínez López,F,2002-10-08,laura.martinez11@correo-demo.co,Bogotá,Plata,2025-11-24,13465,True
+CLI00013,Juan,Hernández Ospina,M,1974-12-20,juan.hernandez12@correo-demo.co,Medellín,Bronce,2024-07-11,24286,True
+CLI00014,Diego,Ospina Gómez,M,1977-11-27,diego.ospina13@correo-demo.co,Barranquilla,Bronce,2024-07-17,6091,False
+CLI00015,Natalia,Mejía Jiménez,Femenino,1987-10-28,natalia.mejia14@correo-demo.co,Medellín,Plata,2022-05-04,5007,True
+CLI00016,Alejandra,Hernández Martínez,Femenino,1965-09-23,alejandra.hernandez15@correo-demo.co,Barranquilla,Plata,2023-06-14,18521,False
+CLI00017,Natalia,Moreno Ortiz,F,1983-01-26,natalia.moreno16@correo-demo.co,Bogotá,Bronce,2020-01-31,22369,False
+CLI00018,Camila,Moreno Suárez,F,2004-09-16,camila.moreno17@correo-demo.co,Medellín,Plata,2025-05-06,10596,True
+CLI00019,Daniela,Hernández Ospina,Femenino,2002-12-02,daniela.hernandez18@correo-demo.co,BARRANQUILLA,Bronce,2024-01-25,4049,True
+CLI00020,Andrés,García López,m,1974-02-18,andres.garcia19@correo-demo.co,Medellin,Plata,2025-04-12,20866,True
