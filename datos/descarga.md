@@ -5,7 +5,7 @@ Las tres fuentes son datos públicos reales; no se usan datos sintéticos. Los a
 | Fuente | Archivo en `datos/raw/` | Formato | Registros | Periodo | Fecha de descarga | Licencia |
 |---|---|---|---|---|---|---|
 | F1 SIPSA – Precios mayoristas | `sipsa_precios_mayoristas_mensual_2013_2017.csv` | CSV (`;`, Latin-1) | 281.386 | ene-2013 a dic-2017 (mensual) | 22/10/2026 | CC BY-SA 4.0 |
-| F2 SIPSA – Abastecimiento | `sipsa_abastecimiento_series_historicas_2013_2026.xlsx` | Excel (.xlsx) | 167 meses × 32 mercados (hoja mensual) | ene-2013 a 2026 (mensual y semanal) | 22/10/2026 | Términos de uso DANE (cita obligatoria) |
+| F2 SIPSA – Abastecimiento | `sipsa_abastecimiento_series_historicas_2013_2026.xlsx` | Excel (.xlsx) | 165 meses × 32 mercados (hoja mensual) | ene-2013 a sep-2026 (mensual y semanal) | 22/10/2026 | Términos de uso DANE (cita obligatoria) |
 | F3 DIVIPOLA – Códigos de municipios | `divipola_municipios.json` | JSON (API Socrata) | 1.122 | Vigente (actualizado ene-2025) | 22/10/2026 | CC BY-SA 4.0 |
 
 ---
