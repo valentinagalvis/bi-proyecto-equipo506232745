@@ -1,0 +1,21 @@
+id_cliente,nombre,ciudad,segmento,email,telefono,fecha_inscripcion,activo,puntos
+C00249,Laura López,Medellín,Platino,laura666@correo.com,3631860802,2021-09-21,true,987
+C01454,Diego Ramírez,Barranquilla,Oro,diego78@correo.com,3918143816,2022-01-12,0,24895
+C00267,Camila López,Medellín,Plata,camila952@correo.com,3060674460,2019-10-21,true,37497
+C00428,Diego Ramírez,Bogotá,,diego631@correo.com,3368556623,2021-03-25,1,29590
+C00866,Nicolás Ramírez,Barranquilla,Platino,nicolás543@correo.com,3726896093,2019-02-28,no,22473
+C01234,Andrés Martínez,Medellín,Plata,andrés630@correo.com,3678633774,2022-08-21,True,46661
+C00608,Laura Díaz,Cali,,laura629@correo.com,3730770890,2021-10-10,1,6361
+C01315,Camila Díaz,Bogotá,,camila275@correo.com,3344552664,2022-02-15,si,467
+C00689,María Vargas,Medellín,Oro,maría26@correo.com,3241899765,2019-02-09,True,15224
+C01066,Luisa Rodríguez,Cali,Platino,luisa914@correo.com,3596293772,2022-07-14,N,13826
+C01865,Natalia Torres,Bogotá,Oro,natalia808@correo.com,3920976402,2023-06-11,Sí,3122
+C01248,Isabela Gómez,Barranquilla,Oro,isabela781correo.com,3901433705,2023-03-18,true,9405
+C00946,Santiago Vargas,Medellín,Plata,santiago12@correo.com,3246686051,2024-04-02,Sí,35616
+C00768,Isabela Castro,Medellín,Clásico,isabela381@correo.com,3830255079,2023-05-28,0,25552
+C01650,Laura Martínez,Bogotá,Plata,laura806@correo.com,3062100966,2024-12-21,si,18530
+C01702,Natalia García,Cali,Platino,natalia648@correo.com,3843971553,2024-01-25,0,35776
+C01765,Sebastián Castro,Cali,Clásico,sebastián7@correo.com,3213904339,2022-04-26,Sí,47134
+C00771,Felipe Ramírez,Cali,Clásico,felipe811@correo.com,3370235737,2022-04-19,true,21099
+C00905,Nicolás García,Barranquilla,Platino,nicolás411@correo.com,3497101945,2019-03-18,Sí,34708
+C01261,Diego López,Medellín,Clásico,diego36correo.com,3151016451,10-Nov-22,1,32159

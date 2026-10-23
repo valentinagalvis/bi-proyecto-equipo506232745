@@ -1,0 +1,53 @@
+%% Esquema dimensional en estrella - Proceso: Venta POS
+%% Importable en https://mermaid.live o draw.io
+erDiagram
+  DIM_TIEMPO   ||--o{ HECHOS_VENTAS : sk_tiempo
+  DIM_PRODUCTO ||--o{ HECHOS_VENTAS : sk_producto
+  DIM_SEDE     ||--o{ HECHOS_VENTAS : sk_sede
+  DIM_CLIENTE  ||--o{ HECHOS_VENTAS : sk_cliente
+  HECHOS_VENTAS {
+    int sk_venta PK
+    int sk_tiempo FK
+    int sk_producto FK
+    int sk_sede FK
+    int sk_cliente FK
+    int unidades
+    numeric valor_venta
+    numeric costo_total
+    numeric margen_bruto
+    numeric precio_mayorista_ref
+  }
+  DIM_TIEMPO {
+    int sk_tiempo PK
+    date fecha
+    int dia
+    int mes
+    int trimestre
+    int anio
+    text dia_semana
+    bool es_fin_de_semana
+  }
+  DIM_PRODUCTO {
+    int sk_producto PK
+    text id_producto
+    text nombre_producto
+    text categoria
+    text grupo
+    text marca
+    text unidad_medida
+  }
+  DIM_SEDE {
+    int sk_sede PK
+    text id_sede
+    text nombre_sede
+    text ciudad
+    text region
+  }
+  DIM_CLIENTE {
+    int sk_cliente PK
+    text id_cliente
+    text segmento
+    text programa
+    text ciudad
+    bool es_fidelizado
+  }

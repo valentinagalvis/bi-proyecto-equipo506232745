@@ -1,0 +1,27 @@
+%% Arquitectura de 5 capas - Supermercados Alianza Colombia S.A.
+%% Importable en https://mermaid.live o draw.io (Arrange > Insert > Mermaid)
+flowchart LR
+  subgraph L1["1 - FUENTES"]
+    F1["F1 Ventas POS<br/>.csv - interna"]
+    F2["F2 Catalogo<br/>.xlsx - interna"]
+    F3["F3 Fidelizacion<br/>.json - interna"]
+    F4["F4 SIPSA precios<br/>.xlsx - REAL/externa (DANE)"]
+  end
+  subgraph L2["2 - INTEGRACION (ETL)"]
+    ETL["Pentaho Data Integration (PDI)<br/>Transformaciones .ktr y trabajos .kjb<br/>Limpieza y estandarizacion<br/>Area de staging"]
+  end
+  subgraph L3["3 - ALMACEN"]
+    DW["PostgreSQL<br/>Data Warehouse dimensional<br/>(esquema estrella)"]
+  end
+  subgraph L4["4 - USUARIO FINAL"]
+    BI["Power BI / Metabase<br/>Dashboards, reportes, KPIs"]
+  end
+  F1 --> ETL
+  F2 --> ETL
+  F3 --> ETL
+  F4 --> ETL
+  ETL --> DW --> BI
+  GOV["5 - GOBIERNO, METADATOS, MONITOREO Y SEGURIDAD (transversal)<br/>Diccionario de datos - GitHub - Roles PostgreSQL - Bitacora ETL - Backups - Ley 1581/2012"]
+  ETL -.-> GOV
+  DW -.-> GOV
+  BI -.-> GOV
