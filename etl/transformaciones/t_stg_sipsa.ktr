@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation><info><name>t_stg_sipsa</name><description>Carga staging de F4 SIPSA (precio mayorista mensual de referencia)</description><extended_description/><trans_version/><trans_type>Normal</trans_type><directory>/</directory><parameters/><log/><maxdate><connection/><table/><field/><offset>0.0</offset><maxdiff>0.0</maxdiff></maxdate><size_rowset>10000</size_rowset><sleep_time_empty>50</sleep_time_empty><sleep_time_full>50</sleep_time_full><unique_connections>N</unique_connections><feedback_shown>Y</feedback_shown><feedback_size>50000</feedback_size><using_thread_priorities>Y</using_thread_priorities><shared_objects_file/><capture_step_performance>N</capture_step_performance><step_performance_capturing_delay>1000</step_performance_capturing_delay><step_performance_capturing_size_limit>100</step_performance_capturing_size_limit><dependencies/><partitionschemas/><slaveservers/><clusterschemas/></info><notepads/>
+<connection>
+  <name>dw_alianza</name><server>${DB_HOST}</server><type>GENERIC</type><access>Native</access>
+  <database>${DB_NAME}</database><port>${DB_PORT}</port><username>${DB_USER}</username><password>${DB_PASS}</password>
+  <servername/><data_tablespace/><index_tablespace/>
+  <attributes>
+    <attribute><code>CUSTOM_URL</code><attribute>jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/Bogota&amp;rewriteBatchedStatements=true&amp;characterEncoding=UTF-8</attribute></attribute>
+    <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute>com.mysql.cj.jdbc.Driver</attribute></attribute>
+    <attribute><code>PORT_NUMBER</code><attribute>${DB_PORT}</attribute></attribute>
+    <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+  </attributes>
+</connection>
+<order><hop><from>Leer F4 SIPSA (xlsx)</from><to>precio_texto_a_numero</to><enabled>Y</enabled></hop><hop><from>precio_texto_a_numero</from><to>normaliza_fecha_mes</to><enabled>Y</enabled></hop><hop><from>normaliza_fecha_mes</from><to>normaliza_grupo_y_producto</to><enabled>Y</enabled></hop><hop><from>normaliza_grupo_y_producto</from><to>separa_ciudad_mercado</to><enabled>Y</enabled></hop><hop><from>separa_ciudad_mercado</from><to>elimina_duplicados_exactos</to><enabled>Y</enabled></hop><hop><from>elimina_duplicados_exactos</from><to>Escribir stg_sipsa_precio</to><enabled>Y</enabled></hop></order>
+<step><name>Leer F4 SIPSA (xlsx)</name><type>ExcelInput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><header>Y</header><noempty>Y</noempty><stoponempty>N</stoponempty><filefield/><sheetfield/><sheetrownumfield/><rownumfield/><limit>0</limit><encoding/><add_to_result_filenames>N</add_to_result_filenames><accept_filenames>N</accept_filenames><accept_field/><accept_stepname/><file><name>${Internal.Entry.Current.Directory}/../../datos/raw/sipsa_precios_mayoristas_2013_2017.xlsx</name><filemask/><exclude_filemask/><file_required>Y</file_required><include_subfolders>N</include_subfolders></file><fields><field><name>Fecha</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>Grupo</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>Producto</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>Fuente</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>Precio</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field></fields><sheets><sheet><name>precios_mayoristas</name><startrow>0</startrow><startcol>0</startcol></sheet></sheets><strict_types>N</strict_types><error_ignored>N</error_ignored><error_line_skipped>N</error_line_skipped><bad_line_files_destination_directory/><bad_line_files_extension>warning</bad_line_files_extension><error_line_files_destination_directory/><error_line_files_extension>error</error_line_files_extension><line_number_files_destination_directory/><line_number_files_extension>line</line_number_files_extension><shortFileFieldName/><pathFieldName/><hiddenFieldName/><lastModificationTimeFieldName/><uriNameFieldName/><rootUriNameFieldName/><extensionFieldName/><sizeFieldName/><spreadsheet_type>SAX_POI</spreadsheet_type><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>250</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>precio_texto_a_numero</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var precio_num = aNumero(Precio);</jsScript_script></jsScript></jsScripts><fields><field><name>precio_num</name><rename>precio_num</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>420</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>normaliza_fecha_mes</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var fecha_mes = normalizaFecha(Fecha);</jsScript_script></jsScript></jsScripts><fields><field><name>fecha_mes</name><rename>fecha_mes</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>590</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>normaliza_grupo_y_producto</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var grupo_ok = Grupo == null ? null : ('' + Grupo).trim().toUpperCase();
+var producto_ok = Producto == null ? null : ('' + Producto).trim().replace(/\s+/g, ' ');</jsScript_script></jsScript></jsScripts><fields><field><name>grupo_ok</name><rename>grupo_ok</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>producto_ok</name><rename>producto_ok</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>760</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>separa_ciudad_mercado</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var f = Fuente == null ? '' : ('' + Fuente).trim();
+var ciudad = null, mercado = null;
+var m = f.match(/^(.*?) \((.*?)\)(.*)$/);
+if (m) { ciudad = m[1]; mercado = m[3].replace(/^,\s*/, '') || m[1]; }
+else if (f.indexOf('Bogotá, D.C.') == 0 || f.toLowerCase().indexOf('bogotá, d.c.') == 0) { ciudad = 'Bogotá, D.C.'; mercado = f.substring(13).trim(); }
+else { var i = f.indexOf(','); ciudad = i &gt; 0 ? f.substring(0, i) : f; mercado = i &gt; 0 ? f.substring(i + 1).trim() : f; }
+ciudad = capitaliza(ciudad); if (ciudad != null &amp;&amp; ciudad.indexOf('Bogot') == 0) ciudad = 'Bogotá, D.C.';
+if (mercado == null || mercado == '') mercado = ciudad;</jsScript_script></jsScript></jsScripts><fields><field><name>ciudad</name><rename>ciudad</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>mercado</name><rename>mercado</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>930</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>elimina_duplicados_exactos</name><type>UniqueRowsByHashSet</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><store_values>N</store_values><reject_duplicate_row>N</reject_duplicate_row><error_description/><fields><field><name>fecha_mes</name></field><field><name>grupo_ok</name></field><field><name>producto_ok</name></field><field><name>ciudad</name></field><field><name>mercado</name></field><field><name>precio_num</name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1100</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>Escribir stg_sipsa_precio</name><type>TableOutput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><schema/><table>stg_sipsa_precio</table><commit>1000</commit><truncate>N</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields><partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly><tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/><fields><field><column_name>fecha_mes</column_name><stream_name>fecha_mes</stream_name></field><field><column_name>grupo</column_name><stream_name>grupo_ok</stream_name></field><field><column_name>producto</column_name><stream_name>producto_ok</stream_name></field><field><column_name>ciudad</column_name><stream_name>ciudad</stream_name></field><field><column_name>mercado</column_name><stream_name>mercado</stream_name></field><field><column_name>precio</column_name><stream_name>precio_num</stream_name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1270</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step_error_handling/><slave-step-copy-partition-distribution/><slave_transformation>N</slave_transformation></transformation>

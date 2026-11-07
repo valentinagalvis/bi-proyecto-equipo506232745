@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation><info><name>t_dim_producto</name><description>Carga dim_producto desde F2 (catalogo_productos.xlsx)</description><extended_description/><trans_version/><trans_type>Normal</trans_type><directory>/</directory><parameters/><log/><maxdate><connection/><table/><field/><offset>0.0</offset><maxdiff>0.0</maxdiff></maxdate><size_rowset>10000</size_rowset><sleep_time_empty>50</sleep_time_empty><sleep_time_full>50</sleep_time_full><unique_connections>N</unique_connections><feedback_shown>Y</feedback_shown><feedback_size>50000</feedback_size><using_thread_priorities>Y</using_thread_priorities><shared_objects_file/><capture_step_performance>N</capture_step_performance><step_performance_capturing_delay>1000</step_performance_capturing_delay><step_performance_capturing_size_limit>100</step_performance_capturing_size_limit><dependencies/><partitionschemas/><slaveservers/><clusterschemas/></info><notepads/>
+<connection>
+  <name>dw_alianza</name><server>${DB_HOST}</server><type>GENERIC</type><access>Native</access>
+  <database>${DB_NAME}</database><port>${DB_PORT}</port><username>${DB_USER}</username><password>${DB_PASS}</password>
+  <servername/><data_tablespace/><index_tablespace/>
+  <attributes>
+    <attribute><code>CUSTOM_URL</code><attribute>jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/Bogota&amp;rewriteBatchedStatements=true&amp;characterEncoding=UTF-8</attribute></attribute>
+    <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute>com.mysql.cj.jdbc.Driver</attribute></attribute>
+    <attribute><code>PORT_NUMBER</code><attribute>${DB_PORT}</attribute></attribute>
+    <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+  </attributes>
+</connection>
+<order><hop><from>Leer F2 catalogo (xlsx)</from><to>dedup_sku</to><enabled>Y</enabled></hop><hop><from>dedup_sku</from><to>normaliza_categoria</to><enabled>Y</enabled></hop><hop><from>normaliza_categoria</from><to>recorta_espacios_nombre</to><enabled>Y</enabled></hop><hop><from>recorta_espacios_nombre</from><to>marca_nula_sin_marca</to><enabled>Y</enabled></hop><hop><from>marca_nula_sin_marca</from><to>costo_texto_a_numero</to><enabled>Y</enabled></hop><hop><from>costo_texto_a_numero</from><to>Escribir dim_producto</to><enabled>Y</enabled></hop></order>
+<step><name>Leer F2 catalogo (xlsx)</name><type>ExcelInput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><header>Y</header><noempty>Y</noempty><stoponempty>N</stoponempty><filefield/><sheetfield/><sheetrownumfield/><rownumfield/><limit>0</limit><encoding/><add_to_result_filenames>N</add_to_result_filenames><accept_filenames>N</accept_filenames><accept_field/><accept_stepname/><file><name>${Internal.Entry.Current.Directory}/../../datos/raw/catalogo_productos.xlsx</name><filemask/><exclude_filemask/><file_required>Y</file_required><include_subfolders>N</include_subfolders></file><fields><field><name>id_producto</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>nombre_producto</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>categoria</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>grupo</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>marca</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>unidad_medida</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field><field><name>costo_referencia</name><type>String</type><length>-1</length><precision>-1</precision><trim_type>none</trim_type><repeat>N</repeat><format/><currency/><decimal/><group/></field></fields><sheets><sheet><name>catalogo</name><startrow>0</startrow><startcol>0</startcol></sheet></sheets><strict_types>N</strict_types><error_ignored>N</error_ignored><error_line_skipped>N</error_line_skipped><bad_line_files_destination_directory/><bad_line_files_extension>warning</bad_line_files_extension><error_line_files_destination_directory/><error_line_files_extension>error</error_line_files_extension><line_number_files_destination_directory/><line_number_files_extension>line</line_number_files_extension><shortFileFieldName/><pathFieldName/><hiddenFieldName/><lastModificationTimeFieldName/><uriNameFieldName/><rootUriNameFieldName/><extensionFieldName/><sizeFieldName/><spreadsheet_type>SAX_POI</spreadsheet_type><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>250</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>dedup_sku</name><type>UniqueRowsByHashSet</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><store_values>N</store_values><reject_duplicate_row>N</reject_duplicate_row><error_description/><fields><field><name>id_producto</name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>420</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>normaliza_categoria</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+categoria = categoria == null ? null : ('' + categoria).trim().toUpperCase();
+grupo = grupo == null ? null : ('' + grupo).trim().toUpperCase();</jsScript_script></jsScript></jsScripts><fields><field><name>categoria</name><rename>categoria</rename><type>String</type><length>-1</length><precision>-1</precision><replace>Y</replace></field><field><name>grupo</name><rename>grupo</rename><type>String</type><length>-1</length><precision>-1</precision><replace>Y</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>590</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>recorta_espacios_nombre</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+nombre_producto = nombre_producto == null ? null : ('' + nombre_producto).trim().replace(/\s+/g, ' ');</jsScript_script></jsScript></jsScripts><fields><field><name>nombre_producto</name><rename>nombre_producto</rename><type>String</type><length>-1</length><precision>-1</precision><replace>Y</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>760</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>marca_nula_sin_marca</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+marca = (marca == null || ('' + marca).trim() == '') ? 'SIN MARCA' : ('' + marca).trim();</jsScript_script></jsScript></jsScripts><fields><field><name>marca</name><rename>marca</rename><type>String</type><length>-1</length><precision>-1</precision><replace>Y</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>930</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>costo_texto_a_numero</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var costo_num = aNumero(costo_referencia);</jsScript_script></jsScript></jsScripts><fields><field><name>costo_num</name><rename>costo_num</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1100</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>Escribir dim_producto</name><type>TableOutput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><schema/><table>dim_producto</table><commit>1000</commit><truncate>N</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields><partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly><tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/><fields><field><column_name>id_producto</column_name><stream_name>id_producto</stream_name></field><field><column_name>nombre_producto</column_name><stream_name>nombre_producto</stream_name></field><field><column_name>categoria</column_name><stream_name>categoria</stream_name></field><field><column_name>grupo</column_name><stream_name>grupo</stream_name></field><field><column_name>marca</column_name><stream_name>marca</stream_name></field><field><column_name>unidad_medida</column_name><stream_name>unidad_medida</stream_name></field><field><column_name>costo_referencia</column_name><stream_name>costo_num</stream_name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1270</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step_error_handling/><slave-step-copy-partition-distribution/><slave_transformation>N</slave_transformation></transformation>

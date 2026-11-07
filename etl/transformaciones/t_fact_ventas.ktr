@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation><info><name>t_fact_ventas</name><description>Carga fact_ventas desde F1 (ventas_pos.csv) con búsqueda de llaves subrogadas</description><extended_description/><trans_version/><trans_type>Normal</trans_type><directory>/</directory><parameters/><log/><maxdate><connection/><table/><field/><offset>0.0</offset><maxdiff>0.0</maxdiff></maxdate><size_rowset>10000</size_rowset><sleep_time_empty>50</sleep_time_empty><sleep_time_full>50</sleep_time_full><unique_connections>N</unique_connections><feedback_shown>Y</feedback_shown><feedback_size>50000</feedback_size><using_thread_priorities>Y</using_thread_priorities><shared_objects_file/><capture_step_performance>N</capture_step_performance><step_performance_capturing_delay>1000</step_performance_capturing_delay><step_performance_capturing_size_limit>100</step_performance_capturing_size_limit><dependencies/><partitionschemas/><slaveservers/><clusterschemas/></info><notepads/>
+<connection>
+  <name>dw_alianza</name><server>${DB_HOST}</server><type>GENERIC</type><access>Native</access>
+  <database>${DB_NAME}</database><port>${DB_PORT}</port><username>${DB_USER}</username><password>${DB_PASS}</password>
+  <servername/><data_tablespace/><index_tablespace/>
+  <attributes>
+    <attribute><code>CUSTOM_URL</code><attribute>jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/Bogota&amp;rewriteBatchedStatements=true&amp;characterEncoding=UTF-8</attribute></attribute>
+    <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute>com.mysql.cj.jdbc.Driver</attribute></attribute>
+    <attribute><code>PORT_NUMBER</code><attribute>${DB_PORT}</attribute></attribute>
+    <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+  </attributes>
+</connection>
+<order><hop><from>Leer F1 ventas POS (csv)</from><to>elimina_duplicados_exactos</to><enabled>Y</enabled></hop><hop><from>elimina_duplicados_exactos</from><to>normaliza_fecha</to><enabled>Y</enabled></hop><hop><from>normaliza_fecha</from><to>precio_texto_a_numero</to><enabled>Y</enabled></hop><hop><from>precio_texto_a_numero</from><to>costo_texto_a_numero</to><enabled>Y</enabled></hop><hop><from>costo_texto_a_numero</from><to>unidades_negativas_a_positivas</to><enabled>Y</enabled></hop><hop><from>unidades_negativas_a_positivas</from><to>filtra_precio_nulo</to><enabled>Y</enabled></hop><hop><from>filtra_precio_nulo</from><to>cliente_vacio_no_fidelizado</to><enabled>Y</enabled></hop><hop><from>filtra_precio_nulo</from><to>rechazo_precio_nulo</to><enabled>Y</enabled></hop><hop><from>cliente_vacio_no_fidelizado</from><to>busca_sk_producto</to><enabled>Y</enabled></hop><hop><from>busca_sk_producto</from><to>busca_sk_sede</to><enabled>Y</enabled></hop><hop><from>busca_sk_sede</from><to>busca_sk_cliente</to><enabled>Y</enabled></hop><hop><from>busca_sk_cliente</from><to>calcula_metricas</to><enabled>Y</enabled></hop><hop><from>calcula_metricas</from><to>Escribir fact_ventas</to><enabled>Y</enabled></hop></order>
+<step><name>Leer F1 ventas POS (csv)</name><type>CsvInput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><filename>${Internal.Entry.Current.Directory}/../../datos/raw/ventas_pos.csv</filename><filename_field/><rownum_field/><include_filename>N</include_filename><separator>,</separator><enclosure>"</enclosure><header>Y</header><buffer_size>50000</buffer_size><lazy_conversion>N</lazy_conversion><add_filename_result>N</add_filename_result><parallel>N</parallel><newline_possible>N</newline_possible><encoding>UTF-8</encoding><fields><field><name>id_venta</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>fecha</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>id_sede</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>ciudad</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>id_producto</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>categoria</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>unidades</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>precio_unitario</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>costo_unitario</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>id_cliente</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field><field><name>canal</name><type>String</type><format/><currency/><decimal/><group/><length>-1</length><precision>-1</precision><trim_type>none</trim_type></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>250</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>elimina_duplicados_exactos</name><type>UniqueRowsByHashSet</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><store_values>N</store_values><reject_duplicate_row>N</reject_duplicate_row><error_description/><fields><field><name>id_venta</name></field><field><name>fecha</name></field><field><name>id_sede</name></field><field><name>ciudad</name></field><field><name>id_producto</name></field><field><name>categoria</name></field><field><name>unidades</name></field><field><name>precio_unitario</name></field><field><name>costo_unitario</name></field><field><name>id_cliente</name></field><field><name>canal</name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>420</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>normaliza_fecha</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var fecha_iso = normalizaFecha(fecha);
+var sk_tiempo = fecha_iso == null ? null : parseInt(fecha_iso.replace(/-/g, ''), 10);</jsScript_script></jsScript></jsScripts><fields><field><name>fecha_iso</name><rename>fecha_iso</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>sk_tiempo</name><rename>sk_tiempo</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>590</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>precio_texto_a_numero</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var precio_num = aNumero(precio_unitario);</jsScript_script></jsScript></jsScripts><fields><field><name>precio_num</name><rename>precio_num</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>760</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>costo_texto_a_numero</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var costo_num = aNumero(costo_unitario);</jsScript_script></jsScript></jsScripts><fields><field><name>costo_num</name><rename>costo_num</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>930</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>unidades_negativas_a_positivas</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var u = aNumero(unidades);
+var unidades_ok = u == null ? null : Math.abs(Math.round(u));</jsScript_script></jsScript></jsScripts><fields><field><name>unidades_ok</name><rename>unidades_ok</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1100</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>filtra_precio_nulo</name><type>FilterRows</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><send_true_to>cliente_vacio_no_fidelizado</send_true_to><send_false_to>rechazo_precio_nulo</send_false_to><compare><condition><negated>N</negated><leftvalue>precio_num</leftvalue><function>IS NOT NULL</function><rightvalue/></condition></compare><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1270</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>rechazo_precio_nulo</name><type>Dummy</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1440</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>cliente_vacio_no_fidelizado</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var id_cliente_lkp = (id_cliente == null || ('' + id_cliente).trim() == '') ? 'NO_FIDEL' : ('' + id_cliente).trim();</jsScript_script></jsScript></jsScripts><fields><field><name>id_cliente_lkp</name><rename>id_cliente_lkp</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1610</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>busca_sk_producto</name><type>DBLookup</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><cache>Y</cache><cache_load_all>Y</cache_load_all><cache_size>0</cache_size><lookup><schema/><table>dim_producto</table><orderby/><fail_on_multiple>N</fail_on_multiple><eat_row_on_failure>N</eat_row_on_failure><key><name>id_producto</name><field>id_producto</field><condition>=</condition><name2/></key><value><name>sk_producto</name><rename>sk_producto</rename><default>-1</default><type>Integer</type></value></lookup><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1780</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>busca_sk_sede</name><type>DBLookup</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><cache>Y</cache><cache_load_all>Y</cache_load_all><cache_size>0</cache_size><lookup><schema/><table>dim_sede</table><orderby/><fail_on_multiple>N</fail_on_multiple><eat_row_on_failure>N</eat_row_on_failure><key><name>id_sede</name><field>id_sede</field><condition>=</condition><name2/></key><value><name>sk_sede</name><rename>sk_sede</rename><default>-1</default><type>Integer</type></value></lookup><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>1950</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>busca_sk_cliente</name><type>DBLookup</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><cache>Y</cache><cache_load_all>Y</cache_load_all><cache_size>0</cache_size><lookup><schema/><table>dim_cliente</table><orderby/><fail_on_multiple>N</fail_on_multiple><eat_row_on_failure>N</eat_row_on_failure><key><name>id_cliente_lkp</name><field>id_cliente</field><condition>=</condition><name2/></key><value><name>sk_cliente</name><rename>sk_cliente</rename><default>-1</default><type>Integer</type></value></lookup><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>2120</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step><name>calcula_metricas</name><type>ScriptValueMod</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><compatible>N</compatible><optimizationLevel>9</optimizationLevel><jsScripts><jsScript><jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name><jsScript_script>
+var MESES = {ene:'01',jan:'01',feb:'02',mar:'03',abr:'04',apr:'04',may:'05',jun:'06',jul:'07',ago:'08',aug:'08',sep:'09',oct:'10',nov:'11',dic:'12',dec:'12'};
+function pad2(x){ x = '' + x; return x.length &lt; 2 ? '0' + x : x; }
+// Devuelve 'aaaa-mm-dd' a partir de aaaa-mm-dd, aaaa/mm/dd, dd/mm/aaaa o dd-mmm-aa; null si no reconoce el formato
+function normalizaFecha(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  var m = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+  if (m) return m[1] + '-' + pad2(m[2]) + '-' + pad2(m[3]);
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + pad2(m[2]) + '-' + pad2(m[1]);
+  m = s.match(/^(\d{1,2})-([A-Za-z]{3})\.?-(\d{2})$/);
+  if (m &amp;&amp; MESES[m[2].toLowerCase()]) return '20' + m[3] + '-' + MESES[m[2].toLowerCase()] + '-' + pad2(m[1]);
+  return null;
+}
+// Convierte '$ 20.640', '13.796,00', '39510.0' o '3073' a número; null si está vacío
+function aNumero(s){
+  if (s == null) return null;
+  s = ('' + s).trim();
+  if (s == '') return null;
+  if (s.indexOf('$') &gt;= 0 || s.indexOf(',') &gt;= 0) {
+    s = s.replace(/\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+  }
+  var n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+function capitaliza(s){
+  if (s == null) return null;
+  s = ('' + s).trim().toLowerCase();
+  return s.charAt(0).toUpperCase() + s.substring(1);
+}
+var valor_venta = Math.round(unidades_ok * precio_num * 100) / 100;
+var costo_total = Math.round(unidades_ok * costo_num * 100) / 100;
+var margen_bruto = Math.round((valor_venta - costo_total) * 100) / 100;</jsScript_script></jsScript></jsScripts><fields><field><name>valor_venta</name><rename>valor_venta</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>costo_total</name><rename>costo_total</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field><field><name>margen_bruto</name><rename>margen_bruto</rename><type>Number</type><length>-1</length><precision>-1</precision><replace>N</replace></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>2290</xloc><yloc>220</yloc><draw>Y</draw></GUI></step>
+<step><name>Escribir fact_ventas</name><type>TableOutput</type><description/><distribute>Y</distribute><custom_distribution/><copies>1</copies><partitioning><method>none</method><schema_name/></partitioning><connection>dw_alianza</connection><schema/><table>fact_ventas</table><commit>1000</commit><truncate>N</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch><specify_fields>Y</specify_fields><partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly><tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/><fields><field><column_name>id_venta</column_name><stream_name>id_venta</stream_name></field><field><column_name>sk_tiempo</column_name><stream_name>sk_tiempo</stream_name></field><field><column_name>sk_producto</column_name><stream_name>sk_producto</stream_name></field><field><column_name>sk_sede</column_name><stream_name>sk_sede</stream_name></field><field><column_name>sk_cliente</column_name><stream_name>sk_cliente</stream_name></field><field><column_name>canal</column_name><stream_name>canal</stream_name></field><field><column_name>unidades</column_name><stream_name>unidades_ok</stream_name></field><field><column_name>precio_unitario</column_name><stream_name>precio_num</stream_name></field><field><column_name>costo_unitario</column_name><stream_name>costo_num</stream_name></field><field><column_name>valor_venta</column_name><stream_name>valor_venta</stream_name></field><field><column_name>costo_total</column_name><stream_name>costo_total</stream_name></field><field><column_name>margen_bruto</column_name><stream_name>margen_bruto</stream_name></field></fields><attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps><GUI><xloc>2460</xloc><yloc>160</yloc><draw>Y</draw></GUI></step>
+<step_error_handling/><slave-step-copy-partition-distribution/><slave_transformation>N</slave_transformation></transformation>
