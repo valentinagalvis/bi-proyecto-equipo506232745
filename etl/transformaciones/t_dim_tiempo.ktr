@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transformation>
+  <info>
+    <name>t_dim_tiempo</name>
+    <description>Puebla dim_tiempo (731 dias, 2023-01-01 a 2024-12-31) desde PDI: genera un dia por fila y escribe la dimension.</description>
+    <directory>/</directory>
+    <trans_type>Normal</trans_type>
+  </info>
+  <connection>
+    <name>dw_alianza</name><server>${DB_HOST}</server><type>GENERIC</type><access>Native</access>
+    <database>${DB_NAME}</database><port>${DB_PORT}</port><username>${DB_USER}</username><password>${DB_PASS}</password>
+    <servername/><data_tablespace/><index_tablespace/>
+    <attributes>
+      <attribute><code>CUSTOM_URL</code><attribute>jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=America/Bogota&amp;rewriteBatchedStatements=true&amp;characterEncoding=UTF-8</attribute></attribute>
+      <attribute><code>CUSTOM_DRIVER_CLASS</code><attribute>com.mysql.cj.jdbc.Driver</attribute></attribute>
+      <attribute><code>PORT_NUMBER</code><attribute>${DB_PORT}</attribute></attribute>
+      <attribute><code>SUPPORTS_BOOLEAN_DATA_TYPE</code><attribute>N</attribute></attribute>
+    </attributes>
+  </connection>
+  <order>
+    <hop><from>Generar 731 filas</from><to>Secuencia offset</to><enabled>Y</enabled></hop>
+    <hop><from>Secuencia offset</from><to>construye_dia</to><enabled>Y</enabled></hop>
+    <hop><from>construye_dia</from><to>Escribir dim_tiempo</to><enabled>Y</enabled></hop>
+  </order>
+  <step>
+    <name>Generar 731 filas</name><type>RowGenerator</type><description/>
+    <distribute>Y</distribute><custom_distribution/><copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <fields>
+      <field><name>fecha_base</name><type>String</type><nullif>2023-01-01</nullif><length>-1</length><precision>-1</precision><set_empty_string>N</set_empty_string></field>
+    </fields>
+    <limit>731</limit><never_ending>N</never_ending><interval_in_ms>5000</interval_in_ms>
+    <row_time_field>now</row_time_field><last_time_field>FiveSecondsAgo</last_time_field>
+    <attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps>
+    <GUI><xloc>200</xloc><yloc>160</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Secuencia offset</name><type>Sequence</type><description/>
+    <distribute>Y</distribute><custom_distribution/><copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <valuename>offset</valuename>
+    <use_database>N</use_database><connection/><schema/><seqname>SEQ_</seqname>
+    <use_counter>Y</use_counter><counter_name/>
+    <start_at>0</start_at><increment_by>1</increment_by><max_value>999999999</max_value>
+    <attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps>
+    <GUI><xloc>420</xloc><yloc>160</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>construye_dia</name><type>ScriptValueMod</type><description/>
+    <distribute>Y</distribute><custom_distribution/><copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <compatible>N</compatible><optimizationLevel>9</optimizationLevel>
+    <jsScripts><jsScript>
+      <jsScript_type>0</jsScript_type><jsScript_name>Script 1</jsScript_name>
+      <jsScript_script>var p = fecha_base.split('-');
+var base = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+var off = parseInt(''+offset, 10);
+var dcur = new Date(base.getTime() + off*86400000);
+var y = dcur.getFullYear();
+var mo = dcur.getMonth()+1;
+var da = dcur.getDate();
+var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+var dias = ['lunes','martes','mi&#233;rcoles','jueves','viernes','s&#225;bado','domingo'];
+var dow = ((dcur.getDay()+6)%7)+1;
+
+var fecha = dcur;
+var sk_tiempo = y*10000 + mo*100 + da;
+var dia = da;
+var mes = mo;
+var nombre_mes = meses[mo-1];
+var trimestre = Math.floor((mo-1)/3)+1;
+var anio = y;
+var dia_semana = dow;
+var nombre_dia = dias[dow-1];
+var es_fin_de_semana = (dow &gt;= 6) ? 1 : 0;</jsScript_script>
+    </jsScript></jsScripts>
+    <fields>
+      <field><name>fecha</name><rename>fecha</rename><type>Date</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>sk_tiempo</name><rename>sk_tiempo</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>dia</name><rename>dia</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>mes</name><rename>mes</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>nombre_mes</name><rename>nombre_mes</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>trimestre</name><rename>trimestre</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>anio</name><rename>anio</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>dia_semana</name><rename>dia_semana</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>nombre_dia</name><rename>nombre_dia</rename><type>String</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+      <field><name>es_fin_de_semana</name><rename>es_fin_de_semana</rename><type>Integer</type><length>-1</length><precision>-1</precision><replace>N</replace></field>
+    </fields>
+    <attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps>
+    <GUI><xloc>640</xloc><yloc>160</yloc><draw>Y</draw></GUI>
+  </step>
+  <step>
+    <name>Escribir dim_tiempo</name><type>TableOutput</type><description/>
+    <distribute>Y</distribute><custom_distribution/><copies>1</copies>
+    <partitioning><method>none</method><schema_name/></partitioning>
+    <connection>dw_alianza</connection><schema/><table>dim_tiempo</table>
+    <commit>1000</commit><truncate>Y</truncate><ignore_errors>N</ignore_errors><use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled><partitioning_field/><partitioning_daily>N</partitioning_daily><partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field><tablename_field/><tablename_in_table>Y</tablename_in_table><return_keys>N</return_keys><return_field/>
+    <fields>
+      <field><column_name>sk_tiempo</column_name><stream_name>sk_tiempo</stream_name></field>
+      <field><column_name>fecha</column_name><stream_name>fecha</stream_name></field>
+      <field><column_name>dia</column_name><stream_name>dia</stream_name></field>
+      <field><column_name>mes</column_name><stream_name>mes</stream_name></field>
+      <field><column_name>nombre_mes</column_name><stream_name>nombre_mes</stream_name></field>
+      <field><column_name>trimestre</column_name><stream_name>trimestre</stream_name></field>
+      <field><column_name>anio</column_name><stream_name>anio</stream_name></field>
+      <field><column_name>dia_semana</column_name><stream_name>dia_semana</stream_name></field>
+      <field><column_name>nombre_dia</column_name><stream_name>nombre_dia</stream_name></field>
+      <field><column_name>es_fin_de_semana</column_name><stream_name>es_fin_de_semana</stream_name></field>
+    </fields>
+    <attributes/><cluster_schema/><remotesteps><input/><output/></remotesteps>
+    <GUI><xloc>880</xloc><yloc>160</yloc><draw>Y</draw></GUI>
+  </step>
+  <step_error_handling/>
+  <slave-step-copy-partition-distribution/>
+  <slave_transformation>N</slave_transformation>
+</transformation>
