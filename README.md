@@ -53,6 +53,19 @@ modelo/             notebooks del modelo predictivo (entregas siguientes)
 5. Validar la carga con las consultas de `dw/conciliacion/`.
 6. Abrir `dashboard/` en Power BI Desktop y actualizar los datos contra la base `dw_alianza`.
 
+## Modelo predictivo (Entrega 3)
+Pronóstico de **ventas netas semanales por sede y categoría** (regresión). Carpeta `modelo/`:
+- `extraccion.sql`: consulta al DW que agrega `fact_ventas` por semana, sede y categoría.
+- `modelo_prediccion_ventas.ipynb`: exploración, preparación, regresión lineal vs árbol de decisión, evaluación (MAE, RMSE) y despliegue.
+- `requirements.txt`: librerías y versiones. `figuras/`: gráficos que genera el notebook.
+
+Para ejecutarlo:
+1. Tener cargado el DW (`etl/trabajos/j_carga_dw.kjb`).
+2. `pip install -r modelo/requirements.txt`
+3. Definir las variables de entorno de conexión (la contraseña nunca va en el repo): `DB_PASS` (si no está definida, el notebook pide la contraseña al ejecutarse); `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` opcionales (por defecto `localhost`, `3307`, `dw_alianza`, `bi_alianza`). En PowerShell: `$env:DB_PASS="..."`.
+4. Desde la carpeta `modelo/`, abrir el notebook en Jupyter y ejecutar *Reiniciar y ejecutar todo*. Se usa Jupyter local (no Colab) porque el DW es un MySQL local al que Colab no puede conectarse.
+5. El notebook crea (con `dw/ddl/08_pred_ventas_semana.sql`) y llena la tabla `pred_ventas_semana`. Para verlo en el tablero, abrir `dashboard/tablero_alianza.pbix`, pulsar **Actualizar** e ir a la página **Predicciones**.
+
 ## Resultado de la carga (Entrega 2)
 | Tabla | Registros |
 |---|---|
